@@ -1,9 +1,6 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
+import TrackerCanvas from './canvas.js';
+import TrackerCartesianPlane from './cartesian-plane.js';
+import ControlledTrackerPlane from './controlled-tracker-plane.js';
 
-export default class extends Component {
-  render() {
-    return <div>
-      <h2>Welcome to React components</h2>
-    </div>
-  }
-}
+export {TrackerCanvas, TrackerCartesianPlane, ControlledTrackerPlane};
