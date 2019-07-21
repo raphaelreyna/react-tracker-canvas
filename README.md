@@ -1,16 +1,12 @@
 # react-tracker-canvas
-
-[![Travis][build-badge]][build]
 [![npm package][npm-badge]][npm]
-[![Coveralls][coveralls-badge]][coveralls]
 
-Describe react-tracker-canvas here.
+Tracks the mouse over a canvas element with some nice animations.
+Can handle mapping the canvas onto arbitrary rectangular regions in the plane.
 
-[build-badge]: https://img.shields.io/travis/user/repo/master.png?style=flat-square
-[build]: https://travis-ci.org/user/repo
+## Installation
+` npm i @rreyna/react-tracker-canvas `
 
 [npm-badge]: https://img.shields.io/npm/v/npm-package.png?style=flat-square
 [npm]: https://www.npmjs.org/package/npm-package
 
-[coveralls-badge]: https://img.shields.io/coveralls/user/repo/master.png?style=flat-square
-[coveralls]: https://coveralls.io/github/user/repo
