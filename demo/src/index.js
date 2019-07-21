@@ -34,4 +34,4 @@ class Demo extends React.Component {
     }
 }
 
-render(<Demo/>, document.querySelector('#demo'));
+render(<Demo/>, document.querySelector('#Demo'));
