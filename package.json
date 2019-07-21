@@ -20,6 +20,7 @@
     "test:watch": "nwb test-react --server"
   },
   "dependencies": {
+    "jsdoc": "^3.6.3"
   },
   "peerDependencies": {
     "react": "16.x"
