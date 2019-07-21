@@ -1,6 +1,6 @@
 {
-  "name": "react-tracker-canvas",
-  "version": "1.0.0",
+  "name": "@rreyna/react-tracker-canvas",
+  "version": "0.9.0",
   "description": "react-tracker-canvas React component",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -20,7 +20,6 @@
     "test:watch": "nwb test-react --server"
   },
   "dependencies": {
-    "jsdoc": "^3.6.2"
   },
   "peerDependencies": {
     "react": "16.x"
@@ -30,7 +29,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },
-  "author": "",
+  "author": "Raphael Reyna",
   "homepage": "",
   "license": "MIT",
   "repository": "",
