@@ -81,6 +81,8 @@ class TrackerCanvas extends React.Component {
         this.mouse = null;
         this.canvas = {
             ref: React.createRef(),
+            height: props.height,
+            width: props.width,
             element: null,
             context: null,
             computedWidth: null,
@@ -88,6 +90,7 @@ class TrackerCanvas extends React.Component {
             boundingClientRect: null
         };
         this.bounds = props.bounds;
+        this.webgl = props.webgl ?  'webgl' : '2d';
         this.mounted = false;
         this.tracking = false;
         this.onMouseMoved = props.onMouseMoved;
@@ -96,7 +99,7 @@ class TrackerCanvas extends React.Component {
     updateCanvasInfo() {
         const canvas = this.canvas;
         canvas.element = ReactDOM.findDOMNode(this.canvas.ref.current);
-        canvas.context = this.canvas.element.getContext('2d');
+        canvas.context = this.canvas.element.getContext(this.webgl);
         const computedStyle = window.getComputedStyle(canvas.element);
         canvas.computedWidth = parseFloat(computedStyle.width);
         canvas.computedHeight = parseFloat(computedStyle.height);
@@ -112,12 +115,16 @@ class TrackerCanvas extends React.Component {
     }
 
     setHighRes() {
-        const canvas = this.canvas.element;
-        canvas.width = 2*this.props.canvasDimensions.width;
-        canvas.height = 2*this.props.canvasDimensions.height;
-        canvas.style.width = this.props.canvasDimensions.width.toString()+"px";
-        canvas.style.height = this.props.canvasDimensions.height.toString()+"px";
-        this.canvas.context.scale(2,2);
+        if (this.props.highRes) {
+            const canvas = this.canvas.element;
+            const width = this.canvas.width;
+            const height = this.canvas.height;
+            canvas.width = 2*width;
+            canvas.height = 2*height;
+            canvas.style.width = width.toString()+"px";
+            canvas.style.height = height.toString()+"px";
+            this.canvas.context.scale(2,2);
+        }
         return this;
     }
 
@@ -167,8 +174,8 @@ class TrackerCanvas extends React.Component {
         return (
             <canvas
                 ref={this.canvas.ref}
-                width={this.props.canvasDimensions.width}
-                height={this.props.canvasDimensions.height}>
+                width={this.canvas.width}
+                height={this.canvas.height}>
             </canvas>
         );
     }
@@ -193,6 +200,10 @@ class TrackerCanvas extends React.Component {
 }
 
 TrackerCanvas.defaultProps = {
+    width: 600,
+    height: 600,
+    webgl: false,
+    highRes: true,
     bounds: {
         horizontal: intervalFromMinMax(0,1),
         vertical: intervalFromMinMax(0,1)

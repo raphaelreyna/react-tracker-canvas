@@ -1,5 +1,5 @@
 import React from 'react';
-import {ControlledTrackerPlane} from '../../src';
+import {TrackerCartesianPlane} from '../../src';
 import {render} from 'react-dom';
 
 class Demo extends React.Component {
@@ -23,8 +23,8 @@ class Demo extends React.Component {
     render() {
         return (
             <div>
-            <ControlledTrackerPlane
-                canvasDimensions={{width: 500, height: 500}}
+            <TrackerCartesianPlane
+                width={500} height={500}
                 onMouseMoved={this.onMouseMoved}
             />
             <h4>{this.state.xLabel}</h4>

@@ -346,6 +346,10 @@ class TrackerCartesianPlane extends TrackerCanvas {
 }
 
 TrackerCartesianPlane.defaultProps = {
+    width: 500,
+    height: 500,
+    webgl: false,
+    highRes: true,
     bounds: {
         horizontal: intervalFromMinMax(-1, 1),
         vertical: intervalFromMinMax(-1, 1)
