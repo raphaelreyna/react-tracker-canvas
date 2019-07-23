@@ -45,6 +45,7 @@ import {intervalFromMinMax, intervalFromLenCen} from './make-interval.js';
    @property {number} length - The length of the interval.
    @property {number} center - The center of the interval.
  */
+
 /**
    Two intervals which define a square region in the plane.
 
@@ -52,13 +53,6 @@ import {intervalFromMinMax, intervalFromLenCen} from './make-interval.js';
    @property {Interval} horizontal - The {@link Interval} on the horizontal axis.
    @property {Interval} vertical - The {@link Interval} on the vertical axis.
 */
-
-/**
-   A pair of numbers describing the width and heing dimensions on a rectangle.
-   @typedef {Object} Dimensions
-   @property {number} width - The width of the rectangle.
-   @property {number} height - The height of the rectangle.
- */
 
 /**
    A pair of numbers describing a point on the plane.
@@ -72,18 +66,18 @@ import {intervalFromMinMax, intervalFromLenCen} from './make-interval.js';
    @typedef {Object} CanvasInfo
    @property {Object} ref - A ReactJS reference to the canvas element.
    @property {Object} element - A handle for the canvas element in the DOM.
+   @property {number} width - The width of the canvas on the screen.
+   @property {number} height - The height of the canvas on the screen.
    @property {number} computedWidth - The computed width of the canvas on the screen.
    @property {number} computedHeight - The computed height of the canvas on the screen.
    @property {Object} boundingClientRect - The rectangle that bounds the canvas element.
  */
-
 
 /**
     Base class for component that tracks the mouse as it moves over a canvas.
     Subclasses should define redraw() method which will be called whenever the mouse moves and is being tracked.
     The redraw() method will be called right before the onMouseMoved callback is called.
 */
-
 class TrackerCanvas extends React.Component {
     /**
        Constructor for class.
@@ -93,6 +87,7 @@ class TrackerCanvas extends React.Component {
        @prop {Method} props.onMouseMoved - Callback method for when the mouse mouse moves, if tracking.
        This method will be passed an the return value of 'formatOutput'.
        @prop {Bounds} props.bounds - The {@link Bounds} that define the region in the plane over which we are tracking.
+       Stored in the components state.
 
        @prop {Point} rawMouse - The {@link Point} that describes the coordinates of the mouse in the standard HTML5 canvas coordinate system.
        @prop {Point} mouse - The {@link Point} that describes the coordinates of mouse mapped onto the region described by the props.bounds property.
@@ -109,26 +104,24 @@ class TrackerCanvas extends React.Component {
         this.mouse = null;
         this.canvas = {
             ref: React.createRef(),
+            height: props.height,
+            width: props.width,
             element: null,
             context: null,
             computedWidth: null,
             computedHeight: null,
             boundingClientRect: null
         };
-        this.bounds = props.bounds;
-        this.mounted = false;
+        this.state = {bounds: props.bounds};
+        this.webgl = props.webgl ?  'webgl' : '2d';
         this.tracking = false;
-        this.onMouseMoved = props.onMouseMoved;
+        this.onMouseMoved = props.onMouseDidMove;
     }
 
-    updateCanvasInfo() {
-        const canvas = this.canvas;
-        canvas.element = ReactDOM.findDOMNode(this.canvas.ref.current);
-        canvas.context = this.canvas.element.getContext('2d');
-        const computedStyle = window.getComputedStyle(canvas.element);
-        canvas.computedWidth = parseFloat(computedStyle.width);
-        canvas.computedHeight = parseFloat(computedStyle.height);
-        canvas.boundingClientRect = canvas.element.getBoundingClientRect();
+    componentDidMount() {
+        this.updateCanvasInfo()
+            .initCanvas()
+            .setHighRes()
         return this;
     }
 
@@ -139,37 +132,61 @@ class TrackerCanvas extends React.Component {
         return this;
     }
 
+    updateCanvasInfo() {
+        const canvas = this.canvas;
+        canvas.element = ReactDOM.findDOMNode(this.canvas.ref.current);
+        canvas.context = this.canvas.element.getContext(this.webgl);
+        const computedStyle = window.getComputedStyle(canvas.element);
+        canvas.computedWidth = parseFloat(computedStyle.width);
+        canvas.computedHeight = parseFloat(computedStyle.height);
+        canvas.boundingClientRect = canvas.element.getBoundingClientRect();
+        return this;
+    }
+
     setHighRes() {
-        const canvas = this.canvas.element;
-        canvas.width = 2*this.props.canvasDimensions.width;
-        canvas.height = 2*this.props.canvasDimensions.height;
-        canvas.style.width = this.props.canvasDimensions.width.toString()+"px";
-        canvas.style.height = this.props.canvasDimensions.height.toString()+"px";
-        this.canvas.context.scale(2,2);
+        if (this.props.highRes) {
+            const canvas = this.canvas.element;
+            const width = this.canvas.width;
+            const height = this.canvas.height;
+            canvas.width = 2*width;
+            canvas.height = 2*height;
+            canvas.style.width = width.toString()+"px";
+            canvas.style.height = height.toString()+"px";
+            this.canvas.context.scale(2,2);
+        }
         return this;
     }
 
-    componentDidMount() {
-        this.updateCanvasInfo()
-            .initCanvas()
-            .setHighRes()
-            .mounted = true;
-        return this;
-    }
-
-    componentWillUnmount() {
-        this.mounted = false;
-    }
 
     handleClick() {
         this.tracking = !this.tracking;
     }
 
-    setMouse() {
-        const mouse = this.rawMouse;
-        const h = this.bounds.horizontal;
-        const v = this.bounds.vertical;
+    handleMouseMove(event) {
+        if (this.tracking) {
+            this.setMouse(event)
+                .redrawWrapper()
+                .onMouseMoved(this.mouse);
+        }
+    }
+
+    /**
+       Use to update both rawMouse and mouse.
+       If no event is given, only mouse is updated.
+       Use when mouse moves or geometry changes.
+    **/
+    setMouse(event) {
         const canvas = this.canvas;
+        if (event) {
+            const boundingRect = canvas.boundingClientRect;
+            this.rawMouse = {
+                x: event.clientX - boundingRect.left,
+                y: event.clientY - boundingRect.top
+            };
+        }
+        const mouse = this.rawMouse;
+        const h = this.state.bounds.horizontal;
+        const v = this.state.bounds.vertical;
         this.mouse = {
             x: h.length*mouse.x/canvas.computedWidth+h.min,
             y: v.max-v.length*mouse.y/canvas.computedHeight
@@ -177,26 +194,12 @@ class TrackerCanvas extends React.Component {
         return this;
     }
 
-    handleMouseMove(event) {
-        if (this.tracking) {
-            const canvas = this.canvas;
-            const boundingRect = canvas.boundingClientRect;
-            this.rawMouse = {
-                x: event.clientX - boundingRect.left,
-                y: event.clientY - boundingRect.top
-            };
-            this.setMouse()
-                .redrawWrapper()
-                .onMouseMoved(this.mouse);
-        }
-    }
-
     render() {
         return (
             &lt;canvas
                 ref={this.canvas.ref}
-                width={this.props.canvasDimensions.width}
-                height={this.props.canvasDimensions.height}>
+                width={this.canvas.width}
+                height={this.canvas.height}>
             &lt;/canvas>
         );
     }
@@ -221,6 +224,10 @@ class TrackerCanvas extends React.Component {
 }
 
 TrackerCanvas.defaultProps = {
+    width: 600,
+    height: 600,
+    webgl: false,
+    highRes: true,
     bounds: {
         horizontal: intervalFromMinMax(0,1),
         vertical: intervalFromMinMax(0,1)
@@ -245,7 +252,7 @@ export default TrackerCanvas;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon Jul 22 2019 21:38:59 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon Jul 22 2019 21:48:40 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
