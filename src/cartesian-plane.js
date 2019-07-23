@@ -30,9 +30,16 @@ class TrackerCartesianPlane extends TrackerCanvas {
         return this;
     }
 
+    componentDidUpdate() {
+        this.setMouse();
+        this.updateGeometry();
+        this.redraw();
+        this.onMouseMoved(this.mouse);
+    }
+
     updateGeometry() {
-        const h = this.bounds.horizontal;
-        const v = this.bounds.vertical;
+        const h = this.state.bounds.horizontal;
+        const v = this.state.bounds.vertical;
         const width = this.canvas.computedWidth;
         const height = this.canvas.computedHeight;
         this.scale = {

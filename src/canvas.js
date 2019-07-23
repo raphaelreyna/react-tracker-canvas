@@ -89,11 +89,24 @@ class TrackerCanvas extends React.Component {
             computedHeight: null,
             boundingClientRect: null
         };
-        this.bounds = props.bounds;
+        this.state = {bounds: props.bounds};
         this.webgl = props.webgl ?  'webgl' : '2d';
-        this.mounted = false;
         this.tracking = false;
-        this.onMouseMoved = props.onMouseMoved;
+        this.onMouseMoved = props.onMouseDidMove;
+    }
+
+    componentDidMount() {
+        this.updateCanvasInfo()
+            .initCanvas()
+            .setHighRes()
+        return this;
+    }
+
+    initCanvas() {
+        this.canvas.element.addEventListener("click", this.handleClick.bind(this));
+        this.canvas.element.addEventListener("mousemove", this.handleMouseMove.bind(this));
+        window.addEventListener("resize", this.updateCanvasInfo.bind(this));
+        return this;
     }
 
     updateCanvasInfo() {
@@ -104,13 +117,6 @@ class TrackerCanvas extends React.Component {
         canvas.computedWidth = parseFloat(computedStyle.width);
         canvas.computedHeight = parseFloat(computedStyle.height);
         canvas.boundingClientRect = canvas.element.getBoundingClientRect();
-        return this;
-    }
-
-    initCanvas() {
-        this.canvas.element.addEventListener("click", this.handleClick.bind(this));
-        this.canvas.element.addEventListener("mousemove", this.handleMouseMove.bind(this));
-        window.addEventListener("resize", this.updateCanvasInfo.bind(this));
         return this;
     }
 
@@ -128,46 +134,41 @@ class TrackerCanvas extends React.Component {
         return this;
     }
 
-    componentDidMount() {
-        this.updateCanvasInfo()
-            .initCanvas()
-            .setHighRes()
-            .mounted = true;
-        return this;
-    }
-
-    componentWillUnmount() {
-        this.mounted = false;
-    }
 
     handleClick() {
         this.tracking = !this.tracking;
     }
 
-    setMouse() {
-        const mouse = this.rawMouse;
-        const h = this.bounds.horizontal;
-        const v = this.bounds.vertical;
-        const canvas = this.canvas;
-        this.mouse = {
-            x: h.length*mouse.x/canvas.computedWidth+h.min,
-            y: v.max-v.length*mouse.y/canvas.computedHeight
-        };
-        return this;
-    }
-
     handleMouseMove(event) {
         if (this.tracking) {
-            const canvas = this.canvas;
+            this.setMouse(event)
+                .redrawWrapper()
+                .onMouseMoved(this.mouse);
+        }
+    }
+
+    /**
+       Use to update both rawMouse and mouse.
+       If no event is given, only mouse is updated.
+       Use when mouse moves or geometry changes.
+    **/
+    setMouse(event) {
+        const canvas = this.canvas;
+        if (event) {
             const boundingRect = canvas.boundingClientRect;
             this.rawMouse = {
                 x: event.clientX - boundingRect.left,
                 y: event.clientY - boundingRect.top
             };
-            this.setMouse()
-                .redrawWrapper()
-                .onMouseMoved(this.mouse);
         }
+        const mouse = this.rawMouse;
+        const h = this.state.bounds.horizontal;
+        const v = this.state.bounds.vertical;
+        this.mouse = {
+            x: h.length*mouse.x/canvas.computedWidth+h.min,
+            y: v.max-v.length*mouse.y/canvas.computedHeight
+        };
+        return this;
     }
 
     render() {
