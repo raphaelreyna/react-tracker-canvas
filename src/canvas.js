@@ -17,6 +17,7 @@ import {intervalFromMinMax, intervalFromLenCen} from './make-interval.js';
    @property {number} length - The length of the interval.
    @property {number} center - The center of the interval.
  */
+
 /**
    Two intervals which define a square region in the plane.
 
@@ -24,13 +25,6 @@ import {intervalFromMinMax, intervalFromLenCen} from './make-interval.js';
    @property {Interval} horizontal - The {@link Interval} on the horizontal axis.
    @property {Interval} vertical - The {@link Interval} on the vertical axis.
 */
-
-/**
-   A pair of numbers describing the width and heing dimensions on a rectangle.
-   @typedef {Object} Dimensions
-   @property {number} width - The width of the rectangle.
-   @property {number} height - The height of the rectangle.
- */
 
 /**
    A pair of numbers describing a point on the plane.
@@ -44,18 +38,18 @@ import {intervalFromMinMax, intervalFromLenCen} from './make-interval.js';
    @typedef {Object} CanvasInfo
    @property {Object} ref - A ReactJS reference to the canvas element.
    @property {Object} element - A handle for the canvas element in the DOM.
+   @property {number} width - The width of the canvas on the screen.
+   @property {number} height - The height of the canvas on the screen.
    @property {number} computedWidth - The computed width of the canvas on the screen.
    @property {number} computedHeight - The computed height of the canvas on the screen.
    @property {Object} boundingClientRect - The rectangle that bounds the canvas element.
  */
-
 
 /**
     Base class for component that tracks the mouse as it moves over a canvas.
     Subclasses should define redraw() method which will be called whenever the mouse moves and is being tracked.
     The redraw() method will be called right before the onMouseMoved callback is called.
 */
-
 class TrackerCanvas extends React.Component {
     /**
        Constructor for class.
@@ -65,6 +59,7 @@ class TrackerCanvas extends React.Component {
        @prop {Method} props.onMouseMoved - Callback method for when the mouse mouse moves, if tracking.
        This method will be passed an the return value of 'formatOutput'.
        @prop {Bounds} props.bounds - The {@link Bounds} that define the region in the plane over which we are tracking.
+       Stored in the components state.
 
        @prop {Point} rawMouse - The {@link Point} that describes the coordinates of the mouse in the standard HTML5 canvas coordinate system.
        @prop {Point} mouse - The {@link Point} that describes the coordinates of mouse mapped onto the region described by the props.bounds property.
