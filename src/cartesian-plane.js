@@ -2,20 +2,50 @@ import TrackerCanvas from './canvas.js';
 import {intervalFromMinMax, intervalFromLenCen} from './make-interval.js';
 
 /**
-   A pair of numbers describing a point on the plane in polar coordinates.
-   @typedef {Object} PolarPoint
-   @property {number} abs - The distance from the point to the origin. Also called the modulus.
-   @property {number} arg - The angle between the horizontal axis and the ray from the origin to the point. This value is in radians and has the range [0, 2Pi).
- */
-
-/**
    Tracks the mouse in a region of the complex plane.
    @constructor
-   @prop {PolarPoint} polarMouse - The polar coordinates of the mouse's location.
+   @param {Object} props - The props object used by ReactJS.
 */
 class TrackerCartesianPlane extends TrackerCanvas {
+    /**
+       Constructor for class.
+       @constructor
+       @prop {Props} props - The {@link Props} that are passed to this component.
+       @prop {number} props.width - The width of the canvas. Default: 500.
+       @prop {number} props.height - The height of the canvas. Default: 500.
+       @prop {Method} props.onMouseMoved - Callback method for when the mouse mouse moves, if tracking. Default: ()=>{return}.
+       @prop {Bounds} props.bounds - The {@link Bounds} that define the region in the plane over which we are tracking.
+       @prop {Boolean} props.webgl - Will use 'WebGL' as the rendering context if true and '2d' otherwise. Default: false.
+       @prop {Boolean} props.tracking - If true, this component will be in the tracking state as soon as it mounts.Default: false.
+       @prop {Boolean} props.highRes - If true, the canvas will render at a 2x resolution. Default: true.
+       @prop {number} props.circleRadius - The radius of the circle drawn at the origin. Default: 1.
+       @prop {String} props.circleStyle - The style of the circle drawn at the origin. Default: 'rgb(0,0,0)'.
+       @prop {String} props.axesStyle - The style for the vertical and horizontal axes. Default: 'rgb(0,0,0)'.
+       @prop {String} props.pointStyle - The style for the point which shows the mouse position on the canvas. Default: 'rgb(200,0,0)'.
+       @prop {number} props.pointSize - The size for the point which shows the mouse position on the canvas. Default: 4.
+       @prop {Boolean} props.drawCircle - If true, a circle will be drawn at the origin. Default: true.
+       @prop {Boolean} props.drawHAxis - If true, the horizontal axis will be drawn. Default: true.
+       @prop {Boolean} props.drawVAxis - If true, the vertical axis will be drawn. Default: true.
+       @prop {Boolean} props.drawLineFromOrigin - If true, a line will be drawn from the origin to the mouse position. Default: true.
+       @prop {Boolean} props.drawAbsLabel - If true, the distance from the origin will be shown above the line. Default: false.
+       @prop {Boolean} props.drawAngleMarker - If true, an arc from the horizontal axis to the line from the origin to the mouse will be drawn. Default: true.
+       @prop {Boolean} props.drawArgLabel - If true, a label showing the current angle will be drawn by the angle marker. Default: false.
+       @prop {Boolean} props.drawHGuide - If true, a vertical line will be drawn from the mouse to the horizontal axis. Default: true.
+       @prop {Boolean} props.drawHLabel - If true, a label showing the mouses x coordinate will be drawn. Default: true.
+       @prop {Boolean} props.drawVGuide - If true, a horizontal line will be drawn from the mouse to the vertical axis. Default: true.
+       @prop {Boolean} props.drawVLabel - If true, a label showing the mouses y coordinate will be drawn. Default: true.
+       @prop {Boolean} props.drawPoint - If true, a point will be drawn at the mouses position. Default: true.
+       @prop {Boolean} props.drawPolarLabel - If true, a label showing the mouse's polar coordinates will be drawn. Default: false.
+       @prop {number} props.decimalPlaces - The number of decimal places to use for labels. Default: 3.
+       @prop {String} props.font - If true, the font to be used for labels. Default: '13px Georgia'.
+    */
     constructor(props) {
         super(props)
+        /**
+           An object containing the polar coordinates of the mouse.
+           @prop {number} abs - The distance from the point to the origin. Also called the modulus.
+           @prop {number} arg - The angle between the horizontal axis and the ray from the origin to the point. This value is in radians and has the range [0, 2Pi).
+        */
             .polarMouse = null;
         this.scale = {h: null, v: null};
         this.origin = {x: null, y: null};
@@ -362,6 +392,7 @@ TrackerCartesianPlane.defaultProps = {
         vertical: intervalFromMinMax(-1, 1)
     },
     onMouseMoved: (pt)=>{return},
+    tracking: false,
     circleRadius: 1,
     circleStyle: 'rgb(0,0,0)',
     axesStyle: 'rgb(0,0,0)',
