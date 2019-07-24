@@ -1,6 +1,6 @@
 {
   "name": "@rreyna/react-tracker-canvas",
-  "version": "0.9.3",
+  "version": "1.0.0",
   "description": "react-tracker-canvas React component",
   "main": "lib/index.js",
   "module": "es/index.js",
