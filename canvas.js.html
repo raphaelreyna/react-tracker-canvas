@@ -29,11 +29,10 @@
             <pre class="prettyprint source linenums"><code>import React from 'react';
 import ReactDOM from 'react-dom';
 import {intervalFromMinMax, intervalFromLenCen} from './make-interval.js';
-/**
-   Properties passed to components in ReactJS.
-   Used to pass properties to components. 
 
-   @typedef {Object} Props
+/**
+   A ReactJS reference.
+   @typedef {Object} React.Ref
  */
 
 /**
@@ -55,13 +54,6 @@ import {intervalFromMinMax, intervalFromLenCen} from './make-interval.js';
 */
 
 /**
-   A pair of numbers describing a point on the plane.
-   @typedef {Object} Point
-   @property {number} x - The x-coordinate of the point.
-   @property {number} y - The y-coordinate of the point.
-*/
-
-/**
    An object containing information about a canvas.
    @typedef {Object} CanvasInfo
    @property {Object} ref - A ReactJS reference to the canvas element.
@@ -77,31 +69,52 @@ import {intervalFromMinMax, intervalFromLenCen} from './make-interval.js';
     Base class for component that tracks the mouse as it moves over a canvas.
     Subclasses should define redraw() method which will be called whenever the mouse moves and is being tracked.
     The redraw() method will be called right before the onMouseMoved callback is called.
+   @prop {Props} props - The {@link Props} that are passed to this component.
+   @prop {number} props.width - The width of the canvas. Default: 600.
+   @prop {number} props.height - The height of the canvas. Default: 600.
+   @prop {Method} props.onMouseMoved - Callback method for when the mouse mouse moves, if tracking. Default: ()=>{return}.
+   @prop {Bounds} props.bounds - The {@link Bounds} that define the region in the plane over which we are tracking.
+   @prop {Boolean} props.webgl - Will use 'WebGL' as the rendering context if true and '2d' otherwise. Default: false.
+   @prop {Boolean} props.tracking - If true, this component will be in the tracking state as soon as it mounts.Default: false.
+   @prop {Boolean} props.highRes - If true, the canvas will render at a 2x resolution. Default: true.
 */
 class TrackerCanvas extends React.Component {
     /**
        Constructor for class.
        @constructor
-       @prop {Props} props - The {@link Props} that are passed to this component.
-       @prop {Dimensions} props.canvasDimensions - The {@link Dimensions} of the canvas.
-       @prop {Method} props.onMouseMoved - Callback method for when the mouse mouse moves, if tracking.
-       This method will be passed an the return value of 'formatOutput'.
-       @prop {Bounds} props.bounds - The {@link Bounds} that define the region in the plane over which we are tracking.
-       Stored in the components state.
-
-       @prop {Point} rawMouse - The {@link Point} that describes the coordinates of the mouse in the standard HTML5 canvas coordinate system.
-       @prop {Point} mouse - The {@link Point} that describes the coordinates of mouse mapped onto the region described by the props.bounds property.
-       @prop {CanvasInfo} canvas - The {@link CanvasInfo} for the canvas to which we will be rendering and tracking over.
-       @prop {Boolean} mounted - Flag that tells us whether or not the component is mounted.
-       @prop {Boolean} tracking - Flag that tells us whether or not we should track the mouse's position in the canvas.
+       @param {Object} props - The props object used by ReactJS.
     */
     constructor(props) {
         super(props);
+        /**
+           An object that describes the coordinates of the mouse in the standard HTML5 canvas coordinate system.
+           @prop {number} x - The x coordinate.
+           @prop {number} y - The y coordinate.
+        */
         this.rawMouse = {
             x: 0,
             y: 0
         };
+        /**
+           An object that describes the x and y coordinates of the mouse in the coordinate system defined by this.state.bounds;
+           Subclasses can override this object by in the redraw() method.
+           This is the position data that gets passed into the onMouseMoved callback.
+           You may want to do this in order to send out additional data such as the angle or velocity.
+           @prop {number} x - The x coordinate.
+           @prop {number} y - The y coordinate.
+        */
         this.mouse = null;
+        /**
+           An object that encapsulates everything we need regarding the canvas.
+           @prop {Object} ref - A ReactJS reference to the canvas element.
+           @prop {number} width - The width of the canvas passed in as a prop.
+           @prop {number} height - The height of the canvas passed in as a prop.
+           @prop {Object} element - The canvas element in the DOM.
+           @prop {Object} context - The rendering context for the canvas. Can be either '2d' or 'WebGl' depending on the value of the WebGL prop.
+           @prop {number} computedWidth - The computed width of the canvas obtained from the window.
+           @prop {number} computedHeight - The computed height of the canvas obtained from the window.
+           @prop {Object} boundingClientRect - The smallest rectangle that completely contains the canvas in the windows coordinate system.
+        */
         this.canvas = {
             ref: React.createRef(),
             height: props.height,
@@ -112,30 +125,44 @@ class TrackerCanvas extends React.Component {
             computedHeight: null,
             boundingClientRect: null
         };
+        /**
+           The state member which is used by ReactJS.
+           @prop {Bounds} bounds - The {@link Bounds} that define which region of the plane we want to map this.mouse into. This allows us to simulate tracking over an arbitrary region of the cartesian plane.
+        */
         this.state = {bounds: props.bounds};
         this.webgl = props.webgl ?  'webgl' : '2d';
-        this.tracking = false;
+        this.tracking = props.tracking;
+        /**
+           Callback used to report the mouse location on the canvas. Gets called whenever the mouse position changes, wether by changing the boundaries or moving the mouse.
+           @param {Object} mouse - The mouse object that contains the x and y coordinates of the mouse. Subclasses may have changed this object to have different properties.
+        */
         this.onMouseMoved = props.onMouseDidMove;
     }
 
     componentDidMount() {
         this.updateCanvasInfo()
             .initCanvas()
-            .setHighRes()
-        return this;
-    }
-
-    initCanvas() {
-        this.canvas.element.addEventListener("click", this.handleClick.bind(this));
-        this.canvas.element.addEventListener("mousemove", this.handleMouseMove.bind(this));
+            .setHighRes();
         window.addEventListener("resize", this.updateCanvasInfo.bind(this));
         return this;
     }
 
+    /**
+       Sets up the canvas once its mounted.
+    */
+    initCanvas() {
+        this.canvas.element.addEventListener("click", this.handleClick.bind(this));
+        this.canvas.element.addEventListener("mousemove", this.handleMouseMove.bind(this));
+        this.canvas.context = this.canvas.element.getContext(this.webgl);
+        return this;
+    }
+
+    /**
+       Updates the canvas member object to reflect the current geometry.
+    */
     updateCanvasInfo() {
         const canvas = this.canvas;
         canvas.element = ReactDOM.findDOMNode(this.canvas.ref.current);
-        canvas.context = this.canvas.element.getContext(this.webgl);
         const computedStyle = window.getComputedStyle(canvas.element);
         canvas.computedWidth = parseFloat(computedStyle.width);
         canvas.computedHeight = parseFloat(computedStyle.height);
@@ -143,6 +170,9 @@ class TrackerCanvas extends React.Component {
         return this;
     }
 
+    /**
+       Sets up canvas to render at a 2x resolution.
+    */
     setHighRes() {
         if (this.props.highRes) {
             const canvas = this.canvas.element;
@@ -157,11 +187,18 @@ class TrackerCanvas extends React.Component {
         return this;
     }
 
-
+    /**
+       Called whenever a click is detected in the canvas. Toggles this.tracking.
+       @param {Object} event - A ReactJS synthetic event object.
+    */
     handleClick() {
         this.tracking = !this.tracking;
     }
 
+    /**
+       Called whenever mouse movement is detected.
+       @param {Object} event - A ReactJS synthetic event object.
+    */
     handleMouseMove(event) {
         if (this.tracking) {
             this.setMouse(event)
@@ -171,9 +208,10 @@ class TrackerCanvas extends React.Component {
     }
 
     /**
+       Called when mouse moves or geometry changes.
        Use to update both rawMouse and mouse.
        If no event is given, only mouse is updated.
-       Use when mouse moves or geometry changes.
+       @param {Object} event - A ReactJS synthetic event object.
     **/
     setMouse(event) {
         const canvas = this.canvas;
@@ -232,7 +270,8 @@ TrackerCanvas.defaultProps = {
         horizontal: intervalFromMinMax(0,1),
         vertical: intervalFromMinMax(0,1)
     },
-    onMouseMoved: (pt)=>{return}
+    onMouseMoved: (pt)=>{return},
+    tracking: false
 };
 
 export default TrackerCanvas;
@@ -252,7 +291,7 @@ export default TrackerCanvas;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon Jul 22 2019 21:48:40 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Tue Jul 23 2019 20:51:41 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

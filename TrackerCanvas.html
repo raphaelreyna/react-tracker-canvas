@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>TrackerCanvas<span class="signature">()</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>TrackerCanvas<span class="signature">(props)</span><span class="type-signature"></span></h2>
         
             <div class="class-description">Base class for component that tracks the mouse as it moves over a canvas.
     Subclasses should define redraw() method which will be called whenever the mouse moves and is being tracked.
@@ -47,7 +47,7 @@
     
 
     
-    <h4 class="name" id="TrackerCanvas"><span class="type-signature"></span>new TrackerCanvas<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="TrackerCanvas"><span class="type-signature"></span>new TrackerCanvas<span class="signature">(props)</span><span class="type-signature"></span></h4>
     
 
     
@@ -64,6 +64,55 @@
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>props</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The props object used by ReactJS.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -102,7 +151,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="global.html#Props">Props</a></span>
+<span class="param-type">Props</span>
 
 
             
@@ -112,7 +161,7 @@
 
             
 
-            <td class="description last">The <a href="global.html#Props">Props</a> that are passed to this component.
+            <td class="description last">The Props that are passed to this component.
                 <h6>Properties</h6>
 
 <table class="props">
@@ -137,13 +186,13 @@
 
         <tr>
             
-                <td class="name"><code>canvasDimensions</code></td>
+                <td class="name"><code>width</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Dimensions</span>
+<span class="param-type">number</span>
 
 
             
@@ -153,7 +202,30 @@
 
             
 
-            <td class="description last">The Dimensions of the canvas.</td>
+            <td class="description last">The width of the canvas. Default: 600.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The height of the canvas. Default: 600.</td>
         </tr>
 
     
@@ -176,8 +248,7 @@
 
             
 
-            <td class="description last">Callback method for when the mouse mouse moves, if tracking.
-       This method will be passed an the return value of 'formatOutput'.</td>
+            <td class="description last">Callback method for when the mouse mouse moves, if tracking. Default: ()=>{return}.</td>
         </tr>
 
     
@@ -200,91 +271,14 @@
 
             
 
-            <td class="description last">The <a href="global.html#Bounds">Bounds</a> that define the region in the plane over which we are tracking.
-       Stored in the components state.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
+            <td class="description last">The <a href="global.html#Bounds">Bounds</a> that define the region in the plane over which we are tracking.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>rawMouse</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="global.html#Point">Point</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The <a href="global.html#Point">Point</a> that describes the coordinates of the mouse in the standard HTML5 canvas coordinate system.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>mouse</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="global.html#Point">Point</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The <a href="global.html#Point">Point</a> that describes the coordinates of mouse mapped onto the region described by the props.bounds property.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>canvas</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="global.html#CanvasInfo">CanvasInfo</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The <a href="global.html#CanvasInfo">CanvasInfo</a> for the canvas to which we will be rendering and tracking over.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>mounted</code></td>
+                <td class="name"><code>webgl</code></td>
             
 
             <td class="type">
@@ -300,7 +294,7 @@
 
             
 
-            <td class="description last">Flag that tells us whether or not the component is mounted.</td>
+            <td class="description last">Will use 'WebGL' as the rendering context if true and '2d' otherwise. Default: false.</td>
         </tr>
 
     
@@ -323,7 +317,37 @@
 
             
 
-            <td class="description last">Flag that tells us whether or not we should track the mouse's position in the canvas.</td>
+            <td class="description last">If true, this component will be in the tracking state as soon as it mounts.Default: false.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>highRes</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">If true, the canvas will render at a 2x resolution. Default: true.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -362,7 +386,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="canvas.js.html">canvas.js</a>, <a href="canvas.js.html#line70">line 70</a>
+        <a href="canvas.js.html">canvas.js</a>, <a href="canvas.js.html#line59">line 59</a>
     </li></ul></dd>
     
 
@@ -408,9 +432,1103 @@
     
 
     
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="canvas"><span class="type-signature"></span>canvas<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    An object that encapsulates everything we need regarding the canvas.
+</div>
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>ref</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A ReactJS reference to the canvas element.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The width of the canvas passed in as a prop.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The height of the canvas passed in as a prop.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>element</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The canvas element in the DOM.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>context</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The rendering context for the canvas. Can be either '2d' or 'WebGl' depending on the value of the WebGL prop.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>computedWidth</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The computed width of the canvas obtained from the window.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>computedHeight</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The computed height of the canvas obtained from the window.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>boundingClientRect</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The smallest rectangle that completely contains the canvas in the windows coordinate system.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="canvas.js.html">canvas.js</a>, <a href="canvas.js.html#line90">line 90</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="mouse"><span class="type-signature"></span>mouse<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    An object that describes the x and y coordinates of the mouse in the coordinate system defined by this.state.bounds;
+           Subclasses can override this object by in the redraw() method.
+           This is the position data that gets passed into the onMouseMoved callback.
+           You may want to do this in order to send out additional data such as the angle or velocity.
+</div>
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The x coordinate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>y</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The y coordinate.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="canvas.js.html">canvas.js</a>, <a href="canvas.js.html#line78">line 78</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="onMouseMoved"><span class="type-signature"></span>onMouseMoved<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Callback used to report the mouse location on the canvas. Gets called whenever the mouse position changes, wether by changing the boundaries or moving the mouse.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="canvas.js.html">canvas.js</a>, <a href="canvas.js.html#line111">line 111</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="rawMouse"><span class="type-signature"></span>rawMouse<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    An object that describes the coordinates of the mouse in the standard HTML5 canvas coordinate system.
+</div>
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The x coordinate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>y</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The y coordinate.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="canvas.js.html">canvas.js</a>, <a href="canvas.js.html#line66">line 66</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="state"><span class="type-signature"></span>state<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    The state member which is used by ReactJS.
+</div>
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bounds</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Bounds">Bounds</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The <a href="global.html#Bounds">Bounds</a> that define which region of the plane we want to map this.mouse into. This allows us to simulate tracking over an arbitrary region of the cartesian plane.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="canvas.js.html">canvas.js</a>, <a href="canvas.js.html#line104">line 104</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
 
     
         <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="handleClick"><span class="type-signature"></span>handleClick<span class="signature">(event)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Called whenever a click is detected in the canvas. Toggles this.tracking.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A ReactJS synthetic event object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="canvas.js.html">canvas.js</a>, <a href="canvas.js.html#line166">line 166</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="handleMouseMove"><span class="type-signature"></span>handleMouseMove<span class="signature">(event)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Called whenever mouse movement is detected.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A ReactJS synthetic event object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="canvas.js.html">canvas.js</a>, <a href="canvas.js.html#line174">line 174</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="initCanvas"><span class="type-signature"></span>initCanvas<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Sets up the canvas once its mounted.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="canvas.js.html">canvas.js</a>, <a href="canvas.js.html#line125">line 125</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         
             
@@ -472,7 +1590,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="canvas.js.html">canvas.js</a>, <a href="canvas.js.html#line190">line 190</a>
+        <a href="canvas.js.html">canvas.js</a>, <a href="canvas.js.html#line228">line 228</a>
     </li></ul></dd>
     
 
@@ -517,7 +1635,7 @@
     
 
     
-    <h4 class="name" id="setMouse"><span class="type-signature"></span>setMouse<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="setHighRes"><span class="type-signature"></span>setHighRes<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -525,9 +1643,7 @@
 
 
 <div class="description">
-    Use to update both rawMouse and mouse.
-       If no event is given, only mouse is updated.
-       Use when mouse moves or geometry changes.
+    Sets up canvas to render at a 2x resolution.
 </div>
 
 
@@ -571,7 +1687,234 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="canvas.js.html">canvas.js</a>, <a href="canvas.js.html#line150">line 150</a>
+        <a href="canvas.js.html">canvas.js</a>, <a href="canvas.js.html#line148">line 148</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="setMouse"><span class="type-signature"></span>setMouse<span class="signature">(event)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Called when mouse moves or geometry changes.
+       Use to update both rawMouse and mouse.
+       If no event is given, only mouse is updated.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A ReactJS synthetic event object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="canvas.js.html">canvas.js</a>, <a href="canvas.js.html#line188">line 188</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="updateCanvasInfo"><span class="type-signature"></span>updateCanvasInfo<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Updates the canvas member object to reflect the current geometry.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="canvas.js.html">canvas.js</a>, <a href="canvas.js.html#line135">line 135</a>
     </li></ul></dd>
     
 
@@ -623,7 +1966,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon Jul 22 2019 21:48:40 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Tue Jul 23 2019 20:51:41 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
