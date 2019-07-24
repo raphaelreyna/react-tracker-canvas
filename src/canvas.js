@@ -41,19 +41,20 @@ import {intervalFromMinMax, intervalFromLenCen} from './make-interval.js';
     Base class for component that tracks the mouse as it moves over a canvas.
     Subclasses should define redraw() method which will be called whenever the mouse moves and is being tracked.
     The redraw() method will be called right before the onMouseMoved callback is called.
+   @prop {Props} props - The {@link Props} that are passed to this component.
+   @prop {number} props.width - The width of the canvas. Default: 600.
+   @prop {number} props.height - The height of the canvas. Default: 600.
+   @prop {Method} props.onMouseMoved - Callback method for when the mouse mouse moves, if tracking. Default: ()=>{return}.
+   @prop {Bounds} props.bounds - The {@link Bounds} that define the region in the plane over which we are tracking.
+   @prop {Boolean} props.webgl - Will use 'WebGL' as the rendering context if true and '2d' otherwise. Default: false.
+   @prop {Boolean} props.tracking - If true, this component will be in the tracking state as soon as it mounts.Default: false.
+   @prop {Boolean} props.highRes - If true, the canvas will render at a 2x resolution. Default: true.
 */
 class TrackerCanvas extends React.Component {
     /**
        Constructor for class.
        @constructor
-       @prop {Props} props - The {@link Props} that are passed to this component.
-       @prop {number} props.width - The width of the canvas. Default: 600.
-       @prop {number} props.height - The height of the canvas. Default: 600.
-       @prop {Method} props.onMouseMoved - Callback method for when the mouse mouse moves, if tracking. Default: ()=>{return}.
-       @prop {Bounds} props.bounds - The {@link Bounds} that define the region in the plane over which we are tracking.
-       @prop {Boolean} webgl - Will use 'WebGL' as the rendering context if true and '2d' otherwise. Default: false.
-       @prop {Boolean} tracking - If true, this component will be in the tracking state as soon as it mounts.Default: false.
-       @prop {Boolean} highRes - If true, the canvas will render at a 2x resolution. Default: true.
+       @param {Object} props - The props object used by ReactJS.
     */
     constructor(props) {
         super(props);
