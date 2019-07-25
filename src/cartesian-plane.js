@@ -53,18 +53,11 @@ class TrackerCartesianPlane extends TrackerCanvas {
 
     componentDidMount() {
         super.componentDidMount()
-             .updateGeometry()
-             .clear()
-             .drawHAxis().drawVAxis()
-            .drawCircle();
+             .redraw();
+             // .clear()
+             // .drawHAxis().drawVAxis()
+             // .drawCircle();
         return this;
-    }
-
-    componentDidUpdate() {
-        this.setMouse();
-        this.updateGeometry();
-        this.redraw();
-        this.onMouseMoved(this.mouse);
     }
 
     updateGeometry() {
@@ -298,7 +291,7 @@ class TrackerCartesianPlane extends TrackerCanvas {
                 ctx.textAlign = "right";
                 xOffset *= -1;
             }
-            const text = this.mouse.cartesian.x.toFixed(this.props.decimalPlaces);
+            const text = this.mouse.x.toFixed(this.props.decimalPlaces);
             let y = this.origin.y-2;
             if (y <= 2) {
                 y = 2;
@@ -347,7 +340,7 @@ class TrackerCartesianPlane extends TrackerCanvas {
             if (x >= canvas.computedWidth) {
                 x = canvas.computedWidth - this.props.decimalPlaces*13;
             }
-            const text = this.mouse.cartesian.y.toFixed(this.props.decimalPlaces);
+            const text = this.mouse.y.toFixed(this.props.decimalPlaces);
             ctx.fillText(text, x, mouse.y);
             ctx.restore();
         }
@@ -364,11 +357,8 @@ class TrackerCartesianPlane extends TrackerCanvas {
             arg = 2 * Math.PI - arg;
         };
         this.polarMouse = {abs: abs, arg: arg};
-        if (this.mouse.polar === undefined) {
-            this.mouse = {cartesian: this.mouse, polar: this.polarMouse};
-        } else {
-            this.mouse.polar = this.polarMouse;
-        }
+        this.mouse.abs = abs;
+        this.mouse.arg = arg;
         return this;
     }
 
@@ -392,6 +382,7 @@ TrackerCartesianPlane.defaultProps = {
         vertical: intervalFromMinMax(-1, 1)
     },
     onMouseMoved: (pt)=>{return},
+    mouseStartingPos: {x: 0.5, y: 0.5},
     tracking: false,
     circleRadius: 1,
     circleStyle: 'rgb(0,0,0)',

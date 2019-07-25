@@ -31,7 +31,9 @@ class Controls extends React.Component {
         this.state ={
             centerX: 0,
             centerY: 0,
-            width: 2
+            width: 2,
+            mouseX: 0.5,
+            mouseY: 0.5
         };
         this.callback = props.onSubmission;
     }
@@ -55,7 +57,25 @@ class Controls extends React.Component {
         const submission = {
             centerX: centerX,
             centerY: centerY,
-            width: width
+            width: width,
+        };
+        this.callback(submission);
+    }
+
+    handleMouseSubmit(event) {
+        event.preventDefault();
+        const mouseX = parseFloat(this.state.mouseX);
+        const mouseY = parseFloat(this.state.mouseY);
+        const width = parseFloat(this.state.width);
+
+        if (isNaN(mouseX) || isNaN(mouseY)) {
+            alert('Please enter a valid mouse position');
+            return;
+        }
+
+        const submission = {
+            mouseX: mouseX,
+            mouseY: mouseY
         };
         this.callback(submission);
     }
@@ -66,6 +86,14 @@ class Controls extends React.Component {
 
     handleYChange(event) {
         this.setState({centerY: event.target.value});
+    }
+
+    handleMXChange(event) {
+        this.setState({mouseX: event.target.value});
+    }
+
+    handleMYChange(event) {
+        this.setState({mouseY: event.target.value});
     }
 
     handleWChange(event) {
@@ -96,6 +124,21 @@ class Controls extends React.Component {
                     <br/>
                     <input type="submit" value="Submit"/>
                 </form>
+                <form onSubmit={this.handleMouseSubmit.bind(this)}>
+                    {"MouseX = "}
+                    <input type="text"
+                           name="mouseX"
+                           value={this.state.mouseX}
+                           onChange={this.handleMXChange.bind(this)}/>
+                    <br/>
+                    {"MouseY = "}
+                    <input type="text"
+                           name="mouseY"
+                           value={this.state.mouseY}
+                           onChange={this.handleMYChange.bind(this)}/>
+                    <br/>
+                    <input type="submit" value="Submit"/>
+                </form>
             </React.Fragment>
         );
     }
@@ -117,19 +160,26 @@ class Demo extends React.Component {
 
     onMouseMoved(mouse) {
         this.labelsRef.current.setState({
-            rLabel: mouse.polar.abs,
-            tLabel: mouse.polar.arg
+            rLabel: mouse.abs,
+            tLabel: mouse.arg
         });
     }
 
     handleSubmission(data) {
-        console.log(data);
-        this.planeRef.current.setState({
-            bounds: {
+        var state= {};
+        if (data.mouseX != null && data.mouseY != null) {
+            state.mouse = {
+                x: data.mouseX,
+                y: data.mouseY
+            };
+        }
+        if (data.centerX != null && data.centerY != null) {
+            state.bounds = {
                 horizontal: intervalFromLenCen(data.width, data.centerX),
                 vertical: intervalFromLenCen(data.width, data.centerY)
-            }
-        });
+            };
+        }
+        this.planeRef.current.setState(state);
     }
 
     render() {

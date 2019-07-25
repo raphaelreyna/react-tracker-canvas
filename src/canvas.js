@@ -41,14 +41,17 @@ import {intervalFromMinMax, intervalFromLenCen} from './make-interval.js';
     Base class for component that tracks the mouse as it moves over a canvas.
     Subclasses should define redraw() method which will be called whenever the mouse moves and is being tracked.
     The redraw() method will be called right before the onMouseMoved callback is called.
-   @prop {Props} props - The {@link Props} that are passed to this component.
-   @prop {number} props.width - The width of the canvas. Default: 600.
-   @prop {number} props.height - The height of the canvas. Default: 600.
-   @prop {Method} props.onMouseMoved - Callback method for when the mouse mouse moves, if tracking. Default: ()=>{return}.
-   @prop {Bounds} props.bounds - The {@link Bounds} that define the region in the plane over which we are tracking.
-   @prop {Boolean} props.webgl - Will use 'WebGL' as the rendering context if true and '2d' otherwise. Default: false.
-   @prop {Boolean} props.tracking - If true, this component will be in the tracking state as soon as it mounts.Default: false.
-   @prop {Boolean} props.highRes - If true, the canvas will render at a 2x resolution. Default: true.
+    @prop {Props} props - The {@link Props} that are passed to this component.
+    @prop {number} props.width - The width of the canvas. Default: 600.
+    @prop {number} props.height - The height of the canvas. Default: 600.
+    @prop {Method} props.onMouseMoved - Callback method for when the mouse mouse moves, if tracking. Default: ()=>{return}.
+    @prop {Bounds} props.bounds - The {@link Bounds} that define the region in the plane over which we are tracking.
+    @prop {Boolean} props.webgl - Will use 'WebGL' as the rendering context if true and '2d' otherwise. Default: false.
+    @prop {Boolean} props.tracking - If true, this component will be in the tracking state as soon as it mounts.Default: false.
+    @prop {Boolean} props.highRes - If true, the canvas will render at a 2x resolution. Default: true.
+    @prop {Object} props.mouseStartingPos - The starting position for the mouse.
+    @prop {number} props.mouseStartingPos.x - The x coordinate of the starting position for the mouse.
+    @prop {number} props.mouseStartingPos.y - The y coordinate of the starting position for the mouse.
 */
 class TrackerCanvas extends React.Component {
     /**
@@ -63,10 +66,7 @@ class TrackerCanvas extends React.Component {
            @prop {number} x - The x coordinate.
            @prop {number} y - The y coordinate.
         */
-        this.rawMouse = {
-            x: 0,
-            y: 0
-        };
+        this.rawMouse = {x:0, y: 0};
         /**
            An object that describes the x and y coordinates of the mouse in the coordinate system defined by this.state.bounds;
            Subclasses can override this object by in the redraw() method.
@@ -76,6 +76,7 @@ class TrackerCanvas extends React.Component {
            @prop {number} y - The y coordinate.
         */
         this.mouse = null;
+        this.oldStateMouse = props.mouseStartingPos;
         /**
            An object that encapsulates everything we need regarding the canvas.
            @prop {Object} ref - A ReactJS reference to the canvas element.
@@ -100,8 +101,12 @@ class TrackerCanvas extends React.Component {
         /**
            The state member which is used by ReactJS.
            @prop {Bounds} bounds - The {@link Bounds} that define which region of the plane we want to map this.mouse into. This allows us to simulate tracking over an arbitrary region of the cartesian plane.
+           @prop {Object} mouse - The x and y coordinates of the mouse. This variable will not be actively updated to reflect the value of the mouse. Instead, it is used to set the mouse position programatically.
         */
-        this.state = {bounds: props.bounds};
+        this.state = {
+            bounds: props.bounds,
+            mouse: props.mouseStartingPos
+        };
         this.webgl = props.webgl ?  'webgl' : '2d';
         this.tracking = props.tracking;
         /**
@@ -116,7 +121,40 @@ class TrackerCanvas extends React.Component {
             .initCanvas()
             .setHighRes();
         window.addEventListener("resize", this.updateCanvasInfo.bind(this));
+        this.syncWithState(true);
+        this.updateGeometry();
+        this.setMouse();
+        this.redraw();
         return this;
+    }
+
+    componentDidUpdate() {
+        this.syncWithState();
+        this.updateGeometry();
+        this.setMouse();
+        this.redraw();
+        this.onMouseMoved(this.mouse);
+    }
+
+    /**
+       Copy the mouse position from the state over to this.rawMouse position.
+       Uses the inverse of the change of basis used in setMouse().
+    */
+    syncWithState(forceSync) {
+        if (this.state.mouse != this.oldStateMouse || forceSync) {
+            const cW = this.canvas.computedWidth;
+            const cH = this.canvas.computedHeight;
+            const h = this.state.bounds.horizontal;
+            const v = this.state.bounds.vertical;
+            const x0 = this.state.mouse.x;
+            const y0 = this.state.mouse.y;
+
+            const x1 = (cW/h.length)*(x0 - h.min);
+            const y1 = (cH/v.length)*(v.max-y0);
+            this.rawMouse = {x: x1, y: y1};
+            console.log()
+            this.oldStateMouse = this.state.mouse;
+        }
     }
 
     /**
@@ -134,7 +172,7 @@ class TrackerCanvas extends React.Component {
     */
     updateCanvasInfo() {
         const canvas = this.canvas;
-        canvas.element = ReactDOM.findDOMNode(this.canvas.ref.current);
+        canvas.element = ReactDOM.findDOMNode(canvas.ref.current);
         const computedStyle = window.getComputedStyle(canvas.element);
         canvas.computedWidth = parseFloat(computedStyle.width);
         canvas.computedHeight = parseFloat(computedStyle.height);
@@ -227,6 +265,12 @@ class TrackerCanvas extends React.Component {
     */
     redraw() {}
 
+    /**
+       Override this function to update any custom geometry needed for drawing based on new bounds.
+       Called every time the state changes.
+    */
+    updateGeometry() {}
+
     redrawWrapper() {
         this.redraw();
         return this;
@@ -243,7 +287,8 @@ TrackerCanvas.defaultProps = {
         vertical: intervalFromMinMax(0,1)
     },
     onMouseMoved: (pt)=>{return},
-    tracking: false
+    tracking: false,
+    mouseStartingPos: {x: 0, y: 0}
 };
 
 export default TrackerCanvas;
