@@ -113,7 +113,7 @@ class TrackerCanvas extends React.Component {
            Callback used to report the mouse location on the canvas. Gets called whenever the mouse position changes, wether by changing the boundaries or moving the mouse.
            @param {Object} mouse - The mouse object that contains the x and y coordinates of the mouse. Subclasses may have changed this object to have different properties.
         */
-        this.onMouseMoved = props.onMouseDidMove;
+        this.onMouseMoved = props.onMouseMoved;
     }
 
     componentDidMount() {
