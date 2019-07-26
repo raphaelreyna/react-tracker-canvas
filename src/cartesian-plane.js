@@ -375,6 +375,7 @@ class TrackerCartesianPlane extends TrackerCanvas {
 TrackerCartesianPlane.defaultProps = {
     width: 500,
     height: 500,
+    id: "cartesianCanvas",
     webgl: false,
     highRes: true,
     bounds: {
