@@ -190,7 +190,7 @@ class Demo extends React.Component {
             <TrackerCartesianPlane
                 ref={this.planeRef}
                 width={500} height={500}
-                onMouseDidMove={this.onMouseMoved}
+                onMouseMoved={this.onMouseMoved}
                 bounds={{
                     horizontal: intervalFromLenCen(w,c.x),
                     vertical: intervalFromLenCen(w,c.y),
