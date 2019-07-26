@@ -44,7 +44,7 @@ import {intervalFromMinMax, intervalFromLenCen} from './make-interval.js';
     @prop {Props} props - The {@link Props} that are passed to this component.
     @prop {number} props.width - The width of the canvas. Default: 600.
     @prop {number} props.height - The height of the canvas. Default: 600.
-    @prop {String} props.id - The id to pass to the underlying canvas element.
+    @prop {String} props.id - The id to pass to the underlying canvas element. Default: 'trackerCanvas'.
     @prop {Method} props.onMouseMoved - Callback method for when the mouse mouse moves, if tracking. Default: ()=>{return}.
     @prop {Bounds} props.bounds - The {@link Bounds} that define the region in the plane over which we are tracking.
     @prop {Boolean} props.webgl - Will use 'WebGL' as the rendering context if true and '2d' otherwise. Default: false.
@@ -248,8 +248,8 @@ class TrackerCanvas extends React.Component {
             <canvas
                 ref={this.canvas.ref}
                 id={this.props.id}
-                width={this.canvas.width}
-                height={this.canvas.height}>
+                width={this.props.width}
+                height={this.props.height}>
             </canvas>
         );
     }

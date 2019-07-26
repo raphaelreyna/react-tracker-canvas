@@ -13,6 +13,7 @@ class TrackerCartesianPlane extends TrackerCanvas {
        @prop {Props} props - The {@link Props} that are passed to this component.
        @prop {number} props.width - The width of the canvas. Default: 500.
        @prop {number} props.height - The height of the canvas. Default: 500.
+       @prop {String} id - The id to pass to the canvas html element. Default: 'cartesianPlane'.
        @prop {Method} props.onMouseMoved - Callback method for when the mouse mouse moves, if tracking. Default: ()=>{return}.
        @prop {Bounds} props.bounds - The {@link Bounds} that define the region in the plane over which we are tracking.
        @prop {Boolean} props.webgl - Will use 'WebGL' as the rendering context if true and '2d' otherwise. Default: false.
